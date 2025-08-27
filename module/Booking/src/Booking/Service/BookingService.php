@@ -11,6 +11,7 @@ use Booking\Entity\Booking\Bill;
 use Booking\Manager\Booking\BillManager;
 use Booking\Manager\BookingManager;
 use Booking\Manager\ReservationManager;
+use User\Manager\UserManager;
 use DateTime;
 use Exception;
 use RuntimeException;
@@ -30,6 +31,7 @@ class BookingService extends AbstractService
     protected $reservationManager;
     protected $squarePricingManager;
     protected $viewHelperManager;
+    protected $userManager;
     protected $connection;
 
     public function __construct(
@@ -40,6 +42,7 @@ class BookingService extends AbstractService
         ReservationManager $reservationManager,
         SquarePricingManager $squarePricingManager,
         ServiceLocatorInterface $viewHelperManager,
+        UserManager $userManager,
         ConnectionInterface $connection)
     {
         $this->optionManager = $optionManager;
@@ -49,6 +52,7 @@ class BookingService extends AbstractService
         $this->reservationManager = $reservationManager;
         $this->squarePricingManager = $squarePricingManager;
         $this->viewHelperManager = $viewHelperManager;
+        $this->userManager = $userManager;
         $this->connection = $connection;
     }
 
@@ -161,6 +165,28 @@ class BookingService extends AbstractService
         $this->getEventManager()->trigger('create.single', $booking);
 
         return $booking;
+    }
+
+    public function refundPayment(Booking $booking)
+    {
+        if ($booking->get('status_billing') == 'paid' && !$booking->getMeta('refunded') == 'true') {
+            $booking->setMeta('refunded', 'true');
+            $this->bookingManager->save($booking);            
+
+            $bills = $this->billManager->getBy(array('bid' => $booking->get('bid')), 'bbid ASC');
+            $total = 0;
+            if ($bills) {
+                foreach ($bills as $bill) {
+                    $total += $bill->need('price');
+                }
+            }
+
+            $user = $this->userManager->get($booking->get('uid'));
+            $newbudget = ($user->getBudget()*100+$total)/100;
+
+            $user->setBudget($newbudget);
+            $this->userManager->save($user);
+        }
     }
 
     public function cancelSingle(Booking $booking)

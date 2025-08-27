@@ -7,6 +7,8 @@ use Base\Manager\OptionManager;
 use Base\Service\AbstractService;
 use Booking\Manager\BookingManager;
 use Booking\Manager\ReservationManager;
+use Payum\Core\Storage\FilesystemStorage;
+use Payum\Core\Security\GenericTokenFactory;
 
 class PaymentService extends AbstractService
 {
@@ -15,13 +17,19 @@ class PaymentService extends AbstractService
     protected $optionManager;
     protected $bookingManager;
     protected $reservationManager;
+    protected $payumStorage;
+    protected $payumTokenStorage;
+    protected $payumTokenFactory;
 
-    public function __construct(ConfigManager $configManager, OptionManager $optionManager, BookingManager $bookingManager, ReservationManager $reservationManager)
+    public function __construct(ConfigManager $configManager, OptionManager $optionManager, BookingManager $bookingManager, ReservationManager $reservationManager, FilesystemStorage $payumStorage, FilesystemStorage $payumTokenStorage, GenericTokenFactory $payumTokenFactory)
     {
         $this->configManager = $configManager;
         $this->optionManager = $optionManager;
         $this->bookingManager = $bookingManager;
         $this->reservationManager = $reservationManager;
+        $this->payumStorage = $payumStorage;
+        $this->payumTokenStorage = $payumTokenStorage;
+        $this->payumTokenFactory = $payumTokenFactory;
     }
 
     public function initBookingPayment($booking, $user, $payservice, $total, $byproducts)
@@ -33,14 +41,10 @@ class PaymentService extends AbstractService
         $projectShort = $this->optionManager->need('client.name.short');
         $baseurl = $this->configManager->need('baseurl');
         $proxyurl = $this->configManager->need('proxyurl');
-        $storage = $this->getServiceLocator()->get('payum')->getStorage('Application\Model\PaymentDetails');
-        $tokenStorage = $this->getServiceLocator()->get('payum.options')->getTokenStorage();
         $captureToken = null;
-        $model = $storage->create();
-        $booking->setMeta('paymentMethod', $payservice);
-        $booking->setMeta('hasBudget', $byproducts['hasBudget']);
-        $booking->setMeta('newbudget', $byproducts['newbudget']);
-        $bookingManager->save($booking);
+        $model = $this->payumStorage->create();
+        $booking->setMeta('paymentMethod', $payservice);        
+        $this->bookingManager->save($booking);
         $userName = $user->getMeta('firstname') . ' ' . $user->getMeta('lastname');
         $companyName = $this->optionManager->need('client.name.full');
 
@@ -58,8 +62,8 @@ class PaymentService extends AbstractService
             $model['PAYMENTREQUEST_0_BID'] = $booking->get('bid');
             $model['PAYMENTREQUEST_0_DESC'] = $description;
             $model['PAYMENTREQUEST_0_EMAIL'] = $user->get('email');
-            $storage->update($model);
-            $captureToken = $this->getServiceLocator()->get('payum.security.token_factory')->createCaptureToken(
+            $this->payumStorage->update($model);
+            $captureToken = $this->payumTokenFactory->createCaptureToken(
                 'paypal_ec', $model, $proxyurl.$basepath.'/payment/booking/done');
         }
         #paypal checkout
@@ -71,8 +75,8 @@ class PaymentService extends AbstractService
             $model["description"] = $description;
             $model["receipt_email"] = $user->get('email');
             $model["metadata"] = array('bid' => $booking->get('bid'), 'productName' => $this->optionManager->need('subject.type'), 'locale' => $locale, 'instance' => $basepath, 'projectShort' => $projectShort, 'userName' => $userName, 'companyName' => $companyName, 'stripeDefaultPaymentMethod' => $this->configManager->need('stripeDefaultPaymentMethod'), 'stripeAutoConfirm' => var_export($this->configManager->need('stripeAutoConfirm'), true), 'stripePaymentRequest' => var_export($this->configManager->need('stripePaymentRequest'), true));
-            $storage->update($model);
-            $captureToken = $this->getServiceLocator()->get('payum.security.token_factory')->createCaptureToken(
+            $this->payumStorage->update($model);
+            $captureToken = $this->payumTokenFactory->createCaptureToken(
                 'stripe', $model, $proxyurl.$basepath.'/payment/booking/confirm');
         }
         #stripe checkout
@@ -81,15 +85,15 @@ class PaymentService extends AbstractService
             $model['purchase_country'] = 'DE';
             $model['purchase_currency'] = 'EUR';
             $model['locale'] = 'de-DE';
-            $storage->update($model);
-            $captureToken = $this->getServiceLocator()->get('payum.security.token_factory')->createAuthorizeToken('klarna_checkout', $model, $proxyurl.$basepath.'/payment/booking/done');
-            $notifyToken = $this->getServiceLocator()->get('payum.security.token_factory')->createNotifyToken('klarna_checkout', $model);
+            $this->payumStorage->update($model);
+            $captureToken = $this->payumTokenFactory->createAuthorizeToken('klarna_checkout', $model, $proxyurl.$basepath.'/payment/booking/done');
+            $notifyToken = $this->payumTokenFactory->createNotifyToken('klarna_checkout', $model);
         }
         #klarna checkout
 
         $targetUrl = str_replace($baseurl, $proxyurl, $captureToken->getTargetUrl());
         $captureToken->setTargetUrl($targetUrl);
-        $tokenStorage->update($captureToken);
+        $this->payumTokenStorage->update($captureToken);
 
         #klarna checkout update merchant details
         if ($payservice == 'klarna') {
@@ -109,12 +113,10 @@ class PaymentService extends AbstractService
                     )
                 )
             );
-            $storage->update($model);
+            $this->payumStorage->update($model);
         }
         #klarna checkout
 
-        return $this->redirect()->toUrl($captureToken->getTargetUrl());
-
-    }    
-
+        return $captureToken->getTargetUrl();
+    }
 }

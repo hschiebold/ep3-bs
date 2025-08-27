@@ -51,33 +51,6 @@ return array(
                                     ),
                                 ),
                             ),
-                            'payment_done' => array(
-                                'type' => 'segment',
-                                'options' => array(
-                                    'route'    => '/payment/done[/:payum_token]',
-                                    'defaults' => array(
-                                        'action' => 'done',
-                                    ),
-                                ),
-                            ),
-                            'payment_confirm' => array(
-                                'type' => 'segment',
-                                'options' => array(
-                                    'route'    => '/payment/confirm[/:payum_token]',
-                                    'defaults' => array(
-                                        'action' => 'confirm',
-                                    ),
-                                ),
-                            ),
-                            'payment_webhook' => array(
-                                'type' => 'Literal',
-                                'options' => array(
-                                    'route'    => '/payment/webhook',
-                                    'defaults' => array(
-                                        'action' => 'webhook',
-                                    ),
-                                ),
-                            ),
                         ),
                     ),
                 ),

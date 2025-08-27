@@ -3,30 +3,51 @@
 return array(
     'router' => array(
         'routes' => array(
-            'payment_done' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route'    => '/payment/booking/done[/:payum_token]',
-                    'defaults' => array(
-                        'action' => 'done',
-                    ),
-                ),
-            ),
-            'payment_confirm' => array(
-                'type' => 'segment',
-                'options' => array(
-                    'route'    => '/payment/booking/confirm[/:payum_token]',
-                    'defaults' => array(
-                        'action' => 'confirm',
-                    ),
-                ),
-            ),
-            'payment_webhook' => array(
+            'payment' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route'    => '/payment/booking/webhook',
+                    'route' => '/payment',
                     'defaults' => array(
-                        'action' => 'webhook',
+                        'controller' => 'Payment\Controller\Payment',
+                    ),
+                ),
+                'may_terminate' => false,
+                'child_routes'  => array(
+                    'booking' => array(
+                        'type' => 'Literal',
+                        'options' => array(
+                            'route' => '/booking',
+                        ),
+                        'may_terminate' => false,
+                        'child_routes'  => array(
+                            'done' => array(
+                                'type' => 'segment',
+                                'options' => array(
+                                    'route'    => '/done[/:payum_token]',
+                                    'defaults' => array(
+                                        'action' => 'done',
+                                    ),
+                                ),
+                            ),
+                            'confirm' => array(
+                                'type' => 'segment',
+                                'options' => array(
+                                    'route'    => '/confirm[/:payum_token]',
+                                    'defaults' => array(
+                                        'action' => 'confirm',
+                                    ),
+                                ),
+                            ),
+                            'webhook' => array(
+                                'type' => 'Literal',
+                                'options' => array(
+                                    'route'    => '/webhook',
+                                    'defaults' => array(
+                                        'action' => 'webhook',
+                                    ),
+                                ),
+                            ),
+                        ),
                     ),
                 ),
             ),

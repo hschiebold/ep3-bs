@@ -6,6 +6,7 @@ use DateTime;
 use RuntimeException;
 use Zend\Crypt\Password\Bcrypt;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Http\Response;
 use Payum\Core\Request\GetHumanStatus;
 use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Reply\HttpRedirect;
@@ -28,17 +29,24 @@ class PaymentController extends AbstractActionController
         $payment = $status->getFirstModel();
 
         // syslog(LOG_EMERG, $payment['status']);
+        // syslog(LOG_EMERG, json_encode($payment));
 
-        if ($payment['status'] === "requires_action" && !(array_key_exists('error',$payment))) {
+        if (($payment['status'] == "requires_action" && !(array_key_exists('error', (array)$payment)))) {
 
-           $payment['paymentDoneAction'] = $token->getTargetUrl();
+          // syslog(LOG_EMERG, "confirm success");
+          $payment['doneAction'] = $token->getTargetUrl();
 
            try {
+               // syslog(LOG_EMERG, "executing confirm");
+
                $gateway->execute(new Confirm($payment));
+
+               // syslog(LOG_EMERG, $payment['status']);
+               // syslog(LOG_EMERG, json_encode($payment));
 
            } catch (ReplyInterface $reply) {
                if ($reply instanceof HttpRedirect) {
-                  return $this->redirect()->toUrl($reply->getUrl());
+                   return $this->redirect()->toUrl($reply->getUrl());
                }
                if ($reply instanceof HttpResponse) {
                   $this->getResponse()->setContent($reply->getContent());
@@ -52,8 +60,11 @@ class PaymentController extends AbstractActionController
 
         }
 
-        if ($payment['status'] != "requires_action" || array_key_exists('error',$payment)) {
-           $doneAction = str_replace("paymentConfirm", "paymentDone", $token->getTargetUrl());
+        if ($payment['status'] != "requires_action" || array_key_exists('error', (array)$payment)) {
+           // syslog(LOG_EMERG, json_encode($payment));
+           // syslog(LOG_EMERG, $payment['status']);
+           // syslog(LOG_EMERG, "confirm error");
+           $doneAction = str_replace("confirm", "done", $token->getTargetUrl());
 
            $token->setTargetUrl($doneAction);
            $tokenStorage->update($token);
@@ -66,7 +77,7 @@ class PaymentController extends AbstractActionController
     public function doneAction()
     {
         // syslog(LOG_EMERG, 'doneAction');
-        
+
         $serviceManager = $this->getServiceLocator();
         $bookingManager = $serviceManager->get('Booking\Manager\BookingManager');
         $squareManager = $serviceManager->get('Square\Manager\SquareManager');
@@ -80,6 +91,9 @@ class PaymentController extends AbstractActionController
         $gateway->execute($status = new GetHumanStatus($token));
 
         $payment = $status->getFirstModel();
+
+        // syslog(LOG_EMERG, json_encode($status));
+        // syslog(LOG_EMERG, json_encode($payment));
 
         $origin = $this->redirectBack()->getOriginAsUrl();
 
@@ -115,7 +129,10 @@ class PaymentController extends AbstractActionController
 
         $square = $squareManager->get($booking->need('sid'));
 
+
         if ($status->isCaptured() || $status->isAuthorized() || $status->isPending() || ($status->isUnknown() && $payment['status'] == 'processing') || $status->getValue() === "success" || $payment['status'] === "succeeded" ) {
+
+            // syslog(LOG_EMERG, 'doneAction - success');
 
             if (!$booking->getMeta('directpay_pending') == 'true') {
                 if ($this->config('genDoorCode') != null && $this->config('genDoorCode') == true && $square->getMeta('square_control') == true) {
@@ -153,18 +170,20 @@ class PaymentController extends AbstractActionController
             if ($booking->getMeta('hasBudget')) {
                 $userManager = $serviceManager->get('User\Manager\UserManager');
                 $user = $userManager->get($booking->get('uid'));
-                $user->setMeta('budget', $booking->getMeta('newbudget'));
+                $user->setBudget($booking->getMeta('newbudget'));
                 $userManager->save($user);
-                # set booking to paid
-                $notes = $notes . "payment with user budget | ";
+                # set note for budget payment
+                $notes = $notes . " payment with user budget | ";
             }
 
-            $notes = $notes . "payment_status: " . $status->getValue() . ' ' . $payment['status'];
+            $notes = $notes . " payment_status: " . $status->getValue() . ' ' . $payment['status'];
             $booking->setMeta('notes', $notes);
             $bookingService->updatePaymentSingle($booking);
-        }
-        else
+	    }
+	    else
         {
+            // syslog(LOG_EMERG, 'doneAction - error');
+
             if (!$booking->getMeta('directpay_pending') == 'true') {
                 if(isset($payment['error']['message'])) {
                     $this->flashMessenger()->addErrorMessage(sprintf($payment['error']['message'],
@@ -175,7 +194,7 @@ class PaymentController extends AbstractActionController
             }
             $bookingService->cancelSingle($booking);
         }
-        
+
         return $this->redirectBack()->toOrigin();
 
     }

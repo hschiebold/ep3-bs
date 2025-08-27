@@ -54,8 +54,9 @@ return array(
         'Service',
         'Square',
         'SquareControl',
-        'User',
+        'Payment',
         'Payum\PayumModule',
+        'User',
 
         /**
          * Custom modules

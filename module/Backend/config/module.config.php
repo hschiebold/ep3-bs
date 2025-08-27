@@ -146,15 +146,6 @@ return array(
                                     ),
                                 ),
                             ),
-                            'webhook' => array(
-                                'type' => 'Literal',
-                                'options' => array(
-                                    'route' => '/webhook',
-                                    'defaults' => array(
-                                        'action' => 'webhook',
-                                    ),
-                                ),
-                            ),
                         ),
                     ),
                     'squarecontrol' => array(

@@ -6,8 +6,6 @@
  * and provide the email address the system should use.
  */
 
-$detailsClass = 'Application\Model\PaymentDetails';
-
 $project_config = require 'config/autoload/project.php';
 
 return array_merge($project_config, array(
@@ -75,7 +73,7 @@ return array_merge($project_config, array(
             )),
         ),
         'storages' => array(
-            $detailsClass => new \Payum\Core\Storage\FilesystemStorage(__DIR__.'/../../data/payum', $detailsClass, 'id'),
+            'Application\Model\PaymentDetails' => new \Payum\Core\Storage\FilesystemStorage(__DIR__.'/../../data/payum', 'Application\Model\PaymentDetails', 'id'),
         )
     ),
 ));

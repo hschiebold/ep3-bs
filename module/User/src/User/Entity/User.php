@@ -149,4 +149,49 @@ class User extends AbstractEntity
         return false;
     }
 
+    /**
+     * Returns the budget status.
+     *
+     * @return boolean
+     */
+    public function hasBudget()
+    {
+        $budget = $this->getMeta('budget');
+
+        if ($budget != null && $budget != '' && $budget > 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns the current budget value.
+     *
+     * @return numeric
+     */
+    public function getBudget()
+    {
+        if ($this->hasBudget()) {
+            return $this->getMeta('budget');
+        }
+
+        return 0;
+    }
+
+    /**
+     * Sets the budget value.
+     */
+    public function setBudget($amount)
+    {
+        $this->setMeta('budget', $amount);
+    }
+
+    /**
+     * Redefines the budget value. 
+     */
+    public function calculateBudget($amount)
+    {
+        $newBudget = $this->getBudget + $amount;
+        $this->setBudget($newBudget);
+    }
 }

@@ -8,9 +8,7 @@ use Booking\Table\ReservationTable;
 use DateTime;
 use Zend\Db\Adapter\Adapter;
 use Zend\Mvc\Controller\AbstractActionController;
-use GuzzleHttp\Client;
-use Stripe\Webhook;
-use Stripe\Exception;
+
 
 class BookingController extends AbstractActionController
 {
@@ -404,6 +402,7 @@ class BookingController extends AbstractActionController
         $reservationManager = $serviceManager->get('Booking\Manager\ReservationManager');
         $squareManager = $serviceManager->get('Square\Manager\SquareManager');
         $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
+        $bookingService = $serviceManager->get('Booking\Service\BookingService');
 
         $rid = $this->params()->fromRoute('rid');
         $editMode = $this->params()->fromQuery('edit-mode');
@@ -430,9 +429,12 @@ class BookingController extends AbstractActionController
 
                 $this->flashMessenger()->addSuccessMessage('Reservation has been deleted');
             } else {
-
+                # storno
                 if ($this->params()->fromQuery('cancel') == 'true') {
                     $this->authorize(['calendar.cancel-single-bookings', 'calendar.cancel-subscription-bookings']);
+
+                    # reset user budget if status paid
+                    $bookingService->refundPayment($booking);
 
                     $booking->set('status', 'cancelled');
                     $booking->setMeta('cancellor', $sessionUser->get('alias'));
@@ -441,40 +443,14 @@ class BookingController extends AbstractActionController
 
                     if ($this->config('genDoorCode') != null && $this->config('genDoorCode') == true && $square->getMeta('square_control') == true) {
                         $squareControlService->deactivateDoorCode($bid);
-                    }
-
-                    # redefine user budget if status paid
-                    if ($booking->need('status') == 'cancelled' && $booking->get('status_billing') == 'paid' && !$booking->getMeta('refunded') == 'true') {
-                        $booking->setMeta('refunded', 'true');
-                        $bookingManager->save($booking);
-
-                        $userManager = $serviceManager->get('User\Manager\UserManager');
-                        $user = $userManager->get($booking->get('uid'));
-
-                        $bookingBillManager = $serviceManager->get('Booking\Manager\Booking\BillManager'); 
-
-                        $bills = $bookingBillManager->getBy(array('bid' => $booking->get('bid')), 'bbid ASC');
-                        $total = 0;
-                        if ($bills) {
-                            foreach ($bills as $bill) {
-                                $total += $bill->need('price');
-                            }
-                        }
-
-                        $olduserbudget = $user->getMeta('budget');
-                        if ($olduserbudget == null || $olduserbudget == '') {
-                            $olduserbudget = 0;
-                        }
-
-                        $newbudget = ($olduserbudget*100+$total)/100;
-
-                        $user->setMeta('budget', $newbudget);
-                        $userManager->save($user);
-                    }
+                    }                    
 
                     $this->flashMessenger()->addSuccessMessage('Booking has been cancelled');
                 } else {
                     $this->authorize(['calendar.delete-single-bookings', 'calendar.delete-subscription-bookings']);
+
+                    # reset user budget if status paid
+                    $bookingService->refundPayment($booking);
 
                     $bookingManager->delete($booking);
 
@@ -737,129 +713,5 @@ class BookingController extends AbstractActionController
             'user' => $user,
             'players' => $players,
         );
-    }
-
-    public function webhookAction()
-    {
-        // $this->authorize('admin.booking'); 
-        // authorize is done via stripe webhook secret
-
-        $serviceManager = @$this->getServiceLocator();
-        $bookingManager = $serviceManager->get('Booking\Manager\BookingManager');
-        $reservationManager = $serviceManager->get('Booking\Manager\ReservationManager');
-        $squareManager = $serviceManager->get('Square\Manager\SquareManager');
-        $squareControlService = $serviceManager->get('SquareControl\Service\SquareControlService');
-
-        // $bookingService = $serviceManager->get('Booking\Service\BookingService');
-
-        $squareControlService->removeInactiveDoorCodes(); 
-
-        $payload = @file_get_contents('php://input');
-        $sig_header = $_SERVER['HTTP_STRIPE_SIGNATURE'];
-        $event = null;
-
-        try {
-            $event = \Stripe\Webhook::constructEvent(
-                $payload, $sig_header, $this->config('stripeWebhookSecret')
-            );
-        } catch(\UnexpectedValueException $e) {
-            // Invalid payload
-            // syslog(LOG_EMERG, '|UnexpectedValueException|');
-            http_response_code(400);
-            return false;
-        } catch(\Stripe\Exception\SignatureVerificationException $e) {
-            // Invalid signature
-            // syslog(LOG_EMERG, '|invalid signature|');
-            http_response_code(400);
-            return false;
-        }
-
-        // syslog(LOG_EMERG, '|'.$event.'|');
-
-        $bid = -1;
-        $intent = null;
-
-        if ($event->type == "payment_intent.succeeded" || $event->type == "payment_intent.payment_failed" || $event->type == "payment_intent.canceled") {
-            $intent = $event->data->object;
-            $bid = $intent->metadata->bid;
-        }
-        else {
-            http_response_code(400);
-            return false;
-        }
-
-        // test
-        // $bid='1443';
-        // $event->type="payment_intent.payment_failed";
-        // end test
-
-        // syslog(LOG_EMERG, '|'.$bid.'|');  
-
-        if (! (is_numeric($bid) && $bid > 0)) {
-            // syslog(LOG_EMERG, 'This bid does not exist');
-            http_response_code(400);
-            return false;
-        }
-
-        try {
-            $booking = $bookingManager->get($bid);
-            $square = $squareManager->get($booking->get('sid'));
-            $notes = $booking->getMeta('notes');
-
-            if ($booking->getMeta('directpay_pending') == true && $booking->getMeta('paymentMethod') == 'stripe') {
-
-            $notes = $notes . " " . " -> via webhook "; 
-
-            if ($event->type == "payment_intent.succeeded") {
-                // syslog(LOG_EMERG, "Succeeded paymentIntent");
-                $notes = $notes . " " . "-> paymentIntent succeded";
-                $booking->set('status_billing', 'paid');
-                $booking->setMeta('paidAt', date('Y-m-d H:i:s'));
-                $booking->setMeta('directpay_pending', false);
-                $booking->setMeta('directpay', true);
-
-            } elseif ($event->type == "payment_intent.payment_failed" || $event->type == "payment_intent.canceled") {
-                // syslog(LOG_EMERG, "Failed or canceled paymentIntent");
-                $notes = $notes . " " . "-> paymentIntent failed or canceled";
-                $error_message = $intent->last_payment_error ? $intent->last_payment_error->message : "";
-                $notes = $notes . " -  " . $error_message;
-                
-                // deactivate door code
-                if ($this->config('genDoorCode') != null && $this->config('genDoorCode') == true && $square->getMeta('square_control') == true) {
-                    $squareControlService->deactivateDoorCode($bid);
-                }
-                
-                // maybe if booking is not outdated cancel single bookings
-                $cancellable = false;
-                $reservations = $reservationManager->getBy(array('bid' => $bid), 'date ASC, time_start ASC');
-                $reservation = current($reservations);
-                if ($reservation) { 
-                    $reservationStartDate = new DateTime($reservation->need('date') . ' ' . $reservation->need('time_start'));
-                    $reservationCancelDate = new DateTime();
-                    if ($reservationStartDate > $reservationCancelDate) { $cancellable = true; }
-                }
-
-                if ($booking->get('status') == 'single' && $cancellable && $this->config('stripeWebhookCancel') == true) {
-                    $booking->set('status', 'cancelled');
-                    $booking->setMeta('cancellor', 'stripe');
-                    $booking->setMeta('cancelled', date('Y-m-d H:i:s'));
-                }
-            }
-
-            $booking->setMeta('notes', $notes);
-            $bookingManager->save($booking);
-            http_response_code(200);
-            return true;
-
-            } 
-
-        } catch(RuntimeException $e) {
-            syslog(LOG_EMERG, $e->getMessage());
-            http_response_code(400);
-            return false;
-        }
-
-        return false;
-    }
-
+    }    
 }
