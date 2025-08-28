@@ -39,7 +39,7 @@ create an account at paypal.com - first sandbox for developing later live - get 
 ## stripe
 create an account at stripe.com - get the API keys (publishable and secret key) - first test later live - and put them in your config/autoload/local.php - enable your preferred payment methods at the stripe dashboard
 
-sepa_debit and other asynchronous payments will remain "pending" status in the app - you have to check manually at the stripe dashboard if the payment is fullfilled - this can happens after a few days - then you can update the booking manually in the app as "paid" - or you can create a webhook at the stripe developer dashboard to your site at https://whatever/public/backend/booking/webhook with events "payment_intent.canceled, payment_intent.payment_failed, payment_intent.succeeded" and then will stripe do it for you
+sepa_debit and other asynchronous payments will remain "pending" status in the app - you have to check manually at the stripe dashboard if the payment is fullfilled - this can happens after a few days - then you can update the booking manually in the app as "paid" - or you can create a webhook at the stripe developer dashboard to your site at https://whatever/public/payment/booking/webhook with events "payment_intent.canceled, payment_intent.payment_failed, payment_intent.succeeded" and then will stripe do it for you
 
 ## apple pay via stripe
 verify your domain for apple pay
