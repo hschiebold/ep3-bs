@@ -12,7 +12,7 @@ img { max-width: 100%; border: none; }
 
 h1, h2, h3, h4, h5, h6 {
     margin: 0; padding: 0;
-    font-family: Arial, sans-serif;
+    font-family: Poppins, sans-serif;
     font-weight: normal;
 }
 
@@ -104,7 +104,7 @@ a#logo:active { top: 1px; }
 #label-client {
     margin-top: 3px;
     text-indent: 91px;
-    font-family: Arial, sans-serif;
+    font-family: Poppins, sans-serif;
     font-size: 16px;
     cursor: default;
     color: #CCC;
@@ -112,7 +112,7 @@ a#logo:active { top: 1px; }
 
 #label-service {
     text-indent: 91px;
-    font-family: Arial, sans-serif;
+    font-family: Poppins, sans-serif;
     font-size: 22px;
     cursor: default;
 }
@@ -326,10 +326,6 @@ a.squarebox-primary-close-link:hover {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
-
-    -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
 }
 
 a.squarebox-primary-close-link:hover {
@@ -362,17 +358,10 @@ a.squarebox-primary-close-link:hover {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
-
-    -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
 }
 
 .panel .panel,
 .centered-panel .panel {
-    -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.3);
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.3);
 }
 
 .centered-panel {
@@ -431,7 +420,7 @@ a.squarebox-primary-close-link:hover {
 .tiny-text { font-size: 10px; }
 .small-text { font-size: 11px; }
 .medium-text { font-size: 12px; }
-.large-text { font-size: 17px; font-family: Arial, sans-serif; }
+.large-text { font-size: 17px; font-family: Poppins, sans-serif; }
 
 .separator { margin: 10px 0; height: 1px; clear: both; }
 .separator-small { margin: 8px 0; height: 1px; clear: both }
@@ -443,11 +432,11 @@ a.squarebox-primary-close-link:hover {
 .message { margin-bottom: 16px; }
 .message:last-child { margin-bottom: 0; }
 
-.symbolic-plus { padding-left: 20px; background-image: url(../imgs/icons/plus.png); }
+.symbolic-plus { padding-left: 22px; background-image: url(../imgs/icons/plus.png); }
 .symbolic-plus-link { padding-left: 20px; background-image: url(../imgs/icons/plus-link.png); }
 .symbolic-minus { padding-left: 20px; background-image: url(../imgs/icons/minus.png); }
 .symbolic-email { padding-left: 24px; background-image: url(../imgs/icons/email.png); }
-.symbolic-pw { padding-left: 16px; background-image: url(../imgs/icons/pw.png); }
+.symbolic-pw { padding-left: 22px; background-image: url(../imgs/icons/pw.png); }
 .symbolic-phone { padding-left: 20px; background-image: url(../imgs/icons/phone.png); }
 .symbolic-off { padding-left: 20px; background-image: url(../imgs/icons/off.png); }
 .symbolic-cross { padding-left: 22px; background-image: url(../imgs/icons/cross.png); }
@@ -456,8 +445,8 @@ a.squarebox-primary-close-link:hover {
 .symbolic-date { padding-left: 20px; background-image: url(../imgs/icons/calendar.png); }
 .symbolic-warning { padding-left: 22px; background-image: url(../imgs/icons/warning.png); }
 .symbolic-attachment { padding-left: 22px; background-image: url(../imgs/icons/attachment.png); }
-.symbolic-config { padding-left: 21px; background-image: url(../imgs/icons/config.png); }
-.symbolic-stats { padding-left: 18px; background-image: url(../imgs/icons/stats.png); }
+.symbolic-config { padding-left: 24px; background-image: url(../imgs/icons/config.png); }
+.symbolic-stats { padding-left: 20px; background-image: url(../imgs/icons/stats.png); }
 .symbolic-tag { padding-left: 22px; background-image: url(../imgs/icons/tag.png); }
 .symbolic-reload { padding-left: 22px; background-image: url(../imgs/icons/reload.png); }
 .symbolic-info { padding-left: 22px; background-image: url(../imgs/icons/info.png); }
@@ -477,23 +466,14 @@ p.symbolic { display: block; }
 .default-message,
 .success-message {
     padding: 8px 8px 8px 48px; color: #FFF; background: #393 url(../imgs/icons/msg-success.png) no-repeat 12px center;
-    -webkit-box-shadow: inset 0 0 16px 0 rgba(255, 255, 255, 0.40), 0 0 8px 0 rgba(51, 153, 51, 0.75);
-    -moz-box-shadow: inset 0 0 16px 0 rgba(255, 255, 255, 0.40), 0 0 8px 0 rgba(51, 153, 51, 0.75);
-    box-shadow: inset 0 0 16px 0 rgba(255, 255, 255, 0.40), 0 0 8px 0 rgba(51, 153, 51, 0.75);
 }
 
 .info-message {
     padding: 8px 8px 8px 48px; color: #FFF; background: #547B97 url(../imgs/icons/msg-info.png) no-repeat 16px center;
-    -webkit-box-shadow: inset 0 0 16px 0 rgba(255, 255, 255, 0.40), 0 0 8px 0 rgba(84, 123, 151, 0.75);
-    -moz-box-shadow: inset 0 0 16px 0 rgba(255, 255, 255, 0.40), 0 0 8px 0 rgba(84, 123, 151, 0.75);
-    box-shadow: inset 0 0 16px 0 rgba(255, 255, 255, 0.40), 0 0 8px 0 rgba(84, 123, 151, 0.75);
 }
 
 .error-message {
     padding: 8px 8px 8px 48px; color: #FFF; background: #933 url(../imgs/icons/msg-error.png) no-repeat 12px center;
-    -webkit-box-shadow: inset 0 0 16px 0 rgba(255, 255, 255, 0.40), 0 0 8px 0 rgba(153, 51, 51, 0.75);
-    -moz-box-shadow: inset 0 0 16px 0 rgba(255, 255, 255, 0.40), 0 0 8px 0 rgba(153, 51, 51, 0.75);
-    box-shadow: inset 0 0 16px 0 rgba(255, 255, 255, 0.40), 0 0 8px 0 rgba(153, 51, 51, 0.75);
 }
 
 .default-message,
@@ -562,10 +542,6 @@ p.symbolic { display: block; }
     width: 100%; height: 100%;
     opacity: 0.1;
     background: url("../imgs/icons/jquery-ui/animated-overlay.gif");
-
-    -webkit-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
-    -moz-box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.5);
 }
 
 /* Links */
@@ -601,7 +577,7 @@ a.default-button:link,
 a.default-button:visited {
     position: relative;
     display: inline-block;
-    padding: 6px 12px;
+    padding: 6px 8px;
     margin: 2px 2px 0px 4px;
     font-family: Poppins, sans-serif;
     font-size: 12px;
@@ -611,36 +587,24 @@ a.default-button:visited {
     white-space: nowrap;
     cursor: pointer;
     opacity: 1.0;
-    border: solid 1px #CCC;
-    border-bottom-color: #666;
+    background: #CAD5DB;
+    /*
+    background: #DFDFDF;
     background: #F6F6F6;
-
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FFF), color-stop(100%, #EEE));
-    background: -webkit-linear-gradient(top, #FFF 0%, #EEE 100%);
-    background: -moz-linear-gradient(top, #FFF 0%, #EEE 100%);
-    background: -ms-linear-gradient(top, #FFF 0%, #EEE 100%);
-    background: linear-gradient(to bottom, #FFF 0%, #EEE 100%);
+    */
 
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
-
-    -webkit-box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.20);
-    -moz-box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.20);
-    box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.20);
 }
 
 .default-button:hover,
 a.default-button:hover {
+    /*
     color: #4A3827;
     border-color: #AAA;
-    border-bottom-color: #4A3827;
-
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #FFF), color-stop(100%, #E2E2E2));
-    background: -webkit-linear-gradient(top, #FFF 0%, #E2E2E2 100%);
-    background: -moz-linear-gradient(top, #FFF 0%, #E2E2E2 100%);
-    background: -ms-linear-gradient(top, #FFF 0%, #E2E2E2 100%);
-    background: linear-gradient(to bottom, #FFF 0%, #E2E2E2 100%);
+    */
+    color: #000000;
 }
 
 .default-button:active,
@@ -674,17 +638,13 @@ a.symbolic-button:hover .arrow-right { border-color: transparent transparent tra
 .arrow-left,
 .arrow-right {
     position: absolute;
-    left: 50%; top: 50%;
-    margin: -8px 0 0 -8px;
-    width: 0; height: 0;
-    border-style: solid;
-    border-width: 8px 16px 8px 0;
-    border-color: transparent #666 transparent transparent;
+    margin: -8px 0 0 -9px;
+    width: 32px; height: 32px;
+    background-image: url(../imgs/icons/misc-back.png);
 }
 
 .arrow-right {
-    border-width: 8px 0 8px 16px;
-    border-color: transparent transparent transparent #666;
+    background-image: url(../imgs/icons/misc-forward.png);
 }
 
 /* Forms */
@@ -701,10 +661,6 @@ select {
     color: #666;
     border: solid 1px #999;
     background-color: #FFF;
-
-    -webkit-box-shadow: inset 0 1px 1px 0 rgba(0, 0, 0, 0.25);
-    -moz-box-shadow: inset 0 1px 1px 0 rgba(0, 0, 0, 0.25);
-    box-shadow: inset 0 1px 1px 0 rgba(0, 0, 0, 0.25);
 
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;

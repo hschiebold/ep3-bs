@@ -33,7 +33,7 @@ $total = $deleted + $blocked + $disabled + $enabled + $assist + $admin;
         </tr>
 
         <tr>
-            <td><span class="gray">&lfloor;</span> <?= $this->t('Deleted user') ?></td>
+            <td><span class="gray"></span> <?= $this->t('Deleted user') ?></td>
             <td class="right-text">
                 <code>
                     <a href="<?= $this->url('backend/user', [], ['query' => ['usf-search' => '(status = deleted)']]) ?>">
@@ -44,7 +44,7 @@ $total = $deleted + $blocked + $disabled + $enabled + $assist + $admin;
         </tr>
 
         <tr>
-            <td><span class="gray">&lfloor;</span> <?= $this->t('Blocked user') ?></td>
+            <td><span class="gray"></span> <?= $this->t('Blocked user') ?></td>
             <td class="right-text">
                 <code>
                     <a href="<?= $this->url('backend/user', [], ['query' => ['usf-search' => '(status = blocked)']]) ?>">
@@ -55,7 +55,7 @@ $total = $deleted + $blocked + $disabled + $enabled + $assist + $admin;
         </tr>
 
         <tr>
-            <td><span class="gray">&lfloor;</span> <?= $this->t('Waiting for activation') ?></td>
+            <td><span class="gray"></span> <?= $this->t('Waiting for activation') ?></td>
             <td class="right-text">
                 <code>
                     <a href="<?= $this->url('backend/user', [], ['query' => ['usf-search' => '(status = disabled)']]) ?>">
@@ -66,7 +66,7 @@ $total = $deleted + $blocked + $disabled + $enabled + $assist + $admin;
         </tr>
 
         <tr>
-            <td><span class="gray">&lfloor;</span> <?= $this->t('Enabled user') ?></td>
+            <td><span class="gray"></span> <?= $this->t('Enabled user') ?></td>
             <td class="right-text">
                 <code>
                     <a href="<?= $this->url('backend/user', [], ['query' => ['usf-search' => '(status = enabled)']]) ?>">
@@ -77,7 +77,7 @@ $total = $deleted + $blocked + $disabled + $enabled + $assist + $admin;
         </tr>
 
         <tr>
-            <td><span class="gray">&lfloor;</span> <?= $this->t('Assist') ?></td>
+            <td><span class="gray"></span> <?= $this->t('Assist') ?></td>
             <td class="right-text">
                 <code>
                     <a href="<?= $this->url('backend/user', [], ['query' => ['usf-search' => '(status = assist)']]) ?>">
@@ -88,7 +88,7 @@ $total = $deleted + $blocked + $disabled + $enabled + $assist + $admin;
         </tr>
 
         <tr>
-            <td><span class="gray">&lfloor;</span> <?= $this->t('Admin') ?></td>
+            <td><span class="gray"></span> <?= $this->t('Admin') ?></td>
             <td class="right-text">
                 <code>
                     <a href="<?= $this->url('backend/user', [], ['query' => ['usf-search' => '(status = admin)']]) ?>">

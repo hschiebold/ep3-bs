@@ -37,7 +37,7 @@ body.tennis-rudolstadt > div.panel:first-child {
 .tennis-rudolstadt #label-service-phone {
   margin-left: 80px;
   font-size: 16px;
-  font-family: Arial, sans-serif;
+  font-family: Poppins, sans-serif;
   padding-top: 3px;
   display: none;
 }
@@ -146,17 +146,19 @@ body.tennis-rudolstadt > div.panel:first-child {
   }
   .tennis-rudolstadt #calendar-toolbar-userpanel .symbolic-booking::before,
   .tennis-rudolstadt #calendar-toolbar-userpanel .symbolic-user::before,
-  .tennis-rudolstadt #calendar-toolbar-userpanel .symbolic-off::before {
+  .tennis-rudolstadt #calendar-toolbar-userpanel 
+  .symbolic-off::before {
     content: " ";
   }
   .tennis-rudolstadt #calendar-toolbar-userpanel .symbolic-booking {
     padding-left: 12px;
   }
+  
   .tennis-rudolstadt #calendar-toolbar-userpanel .symbolic-user {
-    padding-left: 10px;
+    padding-left: 12px;
   }
   .tennis-rudolstadt #calendar-toolbar-userpanel .symbolic-off {
-    padding-left: 11px;
+    padding-left: 13px;
   }
   .tennis-rudolstadt #calendar-toolbar-userpanel .symbolic-config {
     padding-left: 12px;

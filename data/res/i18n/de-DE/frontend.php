@@ -21,7 +21,7 @@ return array(
 
     'Get additional %shelp and information%s' => 'Hier erhalten Sie zusätzliche %sHilfe und Infos%s',
 
-    'Online as %s' => 'Angemeldet als %s',
+    'Online as %s' => 'Hallo %s',
 
     'Administration' => 'Verwaltung',
 
