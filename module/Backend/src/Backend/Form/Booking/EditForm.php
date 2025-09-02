@@ -157,7 +157,7 @@ class EditForm extends Form
             'type' => 'Textarea',
             'attributes' => array(
                 'id' => 'bf-notes',
-                'style' => 'width: autopx; height: 140px;',
+                'style' => 'width: autopx; height: 100px;',
             ),
             'options' => array(
                 'label' => 'Notes',
