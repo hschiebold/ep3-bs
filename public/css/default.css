@@ -71,7 +71,7 @@ code {
     position: relative;
     height: 60px;
     overflow: hidden;
-    border-bottom: solid 1px #666;
+    border-bottom: solid 1px #E3E3E3;
 }
 
 @media (max-width: 1024px) {
@@ -125,7 +125,7 @@ a#logo:active { top: 1px; }
     color: #999;
 }
 
-#branding a:link, #branding a:visited { color: #BBB; text-decoration: none; border-bottom: solid 1px #666; }
+#branding a:link, #branding a:visited { color: #BBB; text-decoration: none; border-bottom: solid 1px #E3E3E3; }
 
 #topbar {
     position: absolute;
@@ -199,7 +199,7 @@ a#logo:active { top: 1px; }
     padding-top: 6px;
     color:  #808080;
     cursor: default;
-    border-top: solid 1px #666;
+    border-top: solid 1px #E3E3E3;
 }
 
 #footer a:link, #footer a:visited {
@@ -234,14 +234,14 @@ a#logo:active { top: 1px; }
 .calendar-table .calendar-date-col { padding-left: 3px; }
 
 .calendar-time-table, .calendar-date-table, .calendar-square-table {
-    border-right: solid 1px #BBB;
-    border-bottom: solid 1px #BBB;
+    border-right: solid 1px #E3E3E3;
+    border-bottom: solid 1px #E3E3E3;
 }
 
 .calendar-time-table td, .calendar-date-table td, .calendar-square-table td {
     padding: 3px;
-    border-top: solid 1px #BBB;
-    border-left: solid 1px #BBB;
+    border-top: solid 1px #E3E3E3;
+    border-left: solid 1px #E3E3E3
 }
 
 .calendar-time-table td,
@@ -587,8 +587,9 @@ a.default-button:visited {
     white-space: nowrap;
     cursor: pointer;
     opacity: 1.0;
-    background: #CAD5DB;
+    background: #D8E3E8;
     /*
+    background: #CAD5DB;
     background: #DFDFDF;
     background: #F6F6F6;
     */
@@ -604,6 +605,7 @@ a.default-button:hover {
     color: #4A3827;
     border-color: #AAA;
     */
+    background: #b2c2c9;
     color: #000000;
 }
 
@@ -659,7 +661,7 @@ select {
     font-family: Poppins, sans-serif;
     font-size: 12px;
     color: #666;
-    border: solid 1px #999;
+    border: solid 1px #E3E3E3;
     background-color: #FFF;
 
     -webkit-border-radius: 3px;
