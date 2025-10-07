@@ -81,6 +81,8 @@ class PaymentController extends AbstractActionController
         $serviceManager = $this->getServiceLocator();
         $bookingManager = $serviceManager->get('Booking\Manager\BookingManager');
         $squareManager = $serviceManager->get('Square\Manager\SquareManager');
+		// is needed for flashMessenger
+        $userSessionManager = $serviceManager->get('User\Manager\UserSessionManager');
 
         $bookingService = $serviceManager->get('Booking\Service\BookingService');
 
