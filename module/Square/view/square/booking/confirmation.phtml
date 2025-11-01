@@ -46,8 +46,8 @@ function showHide() {
 ?>
 
         <?php if ($this->hasBudget): ?>
-        <p class="symbolic symbolic-warning"><b><?= $this->t('payment from open budget') ?>:</b></p>
-        <div style="margin-left: 22px;margin-bottom: 22px;"><b>Budget: <?= $this->budget ?> -> <?= $this->t('new budget') ?> : <?= $this->newbudget ?></b></div>   
+        <p class="symbolic symbolic-warning"><b><font color="red"><?= $this->t('payment from open budget') ?>:</font></b></p>
+        <div style="margin-left: 22px;margin-bottom: 22px;"><b><font color="red"><?= $this->t('budget') ?>: <?= $this->budget ?> -> <?= $this->t('new budget') ?> : <?= $this->newbudget ?></font></b></div>   
         <?php endif; ?>
 
         <?php if ($square->getMeta('rules.document.file')): ?>
