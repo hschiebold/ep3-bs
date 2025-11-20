@@ -55,8 +55,7 @@ function showHide() {
             <p class="symbolic symbolic-warning"><b><?= $this->t('Please note') ?>:</b></p>
 
             <p style="margin-left: 32px;">
-                <!-- <a href="<?= $this->basePath($square->getMeta('rules.document.file')) ?>" class="default-button" target="_blank"> -->
-                <a href="<?= $this->basePath('../extern/hallenordnung11.pdf') ?>" class="default-button" target="_blank">
+                <a href="<?= $this->basePath($square->getMeta('rules.document.file')) ?>" class="default-button" target="_blank">
                     <span class="symbolic symbolic-attachment"><?= $square->getMeta('rules.document.name', $this->t('Rules-document')) ?></span>
                 </a>
 
